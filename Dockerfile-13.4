@@ -13,4 +13,7 @@ ARG PGSTAC_VERSION=0.4.3
 RUN pip install importlib_resources requests psycopg2-binary pypgstac==${PGSTAC_VERSION} -t /asset
 ENV PGSTAC_VERSION=${PGSTAC_VERSION}
 
+COPY await-pg.sh /await-pg.sh
 COPY pgstac.sh /pgstac.sh
+
+WORKDIR /

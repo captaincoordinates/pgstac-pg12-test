@@ -3,9 +3,12 @@ FROM postgres:12.8-bullseye
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update --fix-missing \
   && apt-get install -y --no-install-recommends \
+  build-essential \
+  git \
   netcat \
   postgis \
   postgresql-12-postgis-3 \
+  postgresql-server-dev-12 \
   python3-pip \
   && rm -rf /var/lib/apt/lists/*
 
@@ -13,7 +16,13 @@ ARG PGSTAC_VERSION=0.4.3
 RUN pip install importlib_resources requests psycopg2-binary pypgstac==${PGSTAC_VERSION} -t /asset
 ENV PGSTAC_VERSION=${PGSTAC_VERSION}
 
+WORKDIR /source
+RUN git clone https://github.com/pgpartman/pg_partman.git
+WORKDIR /source/pg_partman
+RUN make install
+
 COPY await-pg.sh /await-pg.sh
+COPY partman.sh /partman.sh
 COPY pgstac.sh /pgstac.sh
 
 WORKDIR /
